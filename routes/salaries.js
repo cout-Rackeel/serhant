@@ -55,6 +55,29 @@ router.get('/', function(req, res, next) {
   
 });
 
+router.get('/employee/:id', function(req, res, next) {
+  let salarySQL = "SELECT s.id, em.emp_id , em.f_name , em.l_name ,d.department , p.position , d.ovrtime_rate,s.hours, s.ovrtime_hrs, s.start_dt ,s.end_dt , s.salary, st.state FROM employees em, departments d, employee_departments ed, positions p,  employee_positions ep, postion_wages pw, employee_salaries s , states st  WHERE ed.emp_id = em.emp_id   AND ep.emp_id = em.emp_id   AND ed.dep_id = d.id  AND ep.pos_id = p.id  AND pw.pos_id = p.id  AND pw.dep_id = d.id  AND s.emp_id = em.emp_id AND s.state_id = st.id AND em.emp_id = '"+req.params.id+"'"
+
+  conn.query(salarySQL, (err,rows)=> {
+    if(err) throw err
+    console.log(salarySQL);
+   var locals = {
+      title : 'Serhant Construction',
+      stylesheet:'/stylesheets/salaries.css',
+      data:rows,
+      bootstrap:true,
+      my_session : req.session
+    }
+
+    if(req.session.loggedIn && req.session.emp_id == req.params.id){
+      res.render('salaries/salaries-list-all', locals);
+    }else{
+      res.redirect('/')
+    }
+    
+  })
+  
+});
 
 router.get('/sal-info/:id', function(req, res, next) {
   var locals = {
@@ -67,12 +90,11 @@ router.get('/sal-info/:id', function(req, res, next) {
   res.render('salaries/salaries-form', locals);
 });
 
-
 router.post('/add-hours' , (req,res,next) => {
 
   //* Callback Function to get wages
  function getWages(callback){
-    let wageSQL = `SELECT em.emp_id , em.f_name , em.l_name , d.department , p.position , d.ovrtime_rate, pw.wrk_hrs, pw.hrly_wage , p.id AS pos_id , d.id AS dep_id FROM employees em, departments d, employee_departments ed, positions p, employee_positions ep, postion_wages pw WHERE ed.emp_id = em.emp_id  AND ep.emp_id = em.emp_id  AND ed.dep_id = d.id AND ep.pos_id = p.id AND pw.pos_id = p.id AND pw.dep_id = d.id AND em.emp_id = ${req.body.emp_id} `
+    let wageSQL = `SELECT em.emp_id , em.f_name , em.l_name , d.department , p.position , d.ovrtime_rate, pw.wrk_hrs, pw.hrly_wage , p.id AS pos_id , d.id AS dep_id FROM employees em, departments d, employee_departments ed, positions p, employee_positions ep, postion_wages pw WHERE ed.emp_id = em.emp_id  AND ep.emp_id = em.emp_id  AND ed.dep_id = d.id AND ep.pos_id = p.id AND pw.pos_id = p.id AND pw.dep_id = d.id AND em.emp_id = '${req.body.emp_id}' `
 
     conn.query(wageSQL,(err,rows) => {
       if(err) throw err;
@@ -87,7 +109,7 @@ router.post('/add-hours' , (req,res,next) => {
   // End of Function
   
   let data = {
-    emp_id: wages.emp_id,
+    emp_id: req.body.emp_id,
     hours: workHrsCalc(req.body.hours,wages),
     ovrtime_hrs: overtimeCalc(req.body.hours,wages),
     salary:null,
@@ -102,11 +124,14 @@ router.post('/add-hours' , (req,res,next) => {
   let hourSql = " INSERT INTO employee_salaries SET ?"
 
   
-  conn.query( hourSql , data , (err , rows) => {
-    if(err) throw err;
-    res.redirect('/salaries')
-  })
-
+  
+    conn.query( hourSql , data , (err , rows) => {
+      if(err) throw err;
+      console.log(data.emp_id);
+      res.redirect('/salaries')
+    })  
+  
+  
   
 })
 
@@ -157,21 +182,19 @@ let data = {
   emp_id: wages.emp_id,
   hours: workHrsCalc(req.body.hours,wages),
   ovrtime_hrs: overtimeCalc(req.body.hours,wages),
-  salary: salaryCalc(this.hours,this.ovrtime_hrs, wages),
+  salary: null,
   start_dt: req.body.start_dt,
   end_dt: req.body.end_dt,
   state_id: req.body.state,
 }
 
  data.salary = salaryCalc(data.hours,data.ovrtime_hrs,wages);
-  // let editSQL = "UPDATE employee_salaries SET hours ='" + req.body.hours +
-  //  "', ovrtime_hrs ='" + newOvertime + 
-  //  "', salary = WHERE id = " + req.body.salaryID ;
 
-   let hourSQL = ` INSERT INTO employee_salaries SET ? where id = ${req.body.salaryID} `
+  let editSQL = `Update employee_salaries Set hours = '${data.hours}', ovrtime_hrs = '${data.ovrtime_hrs}', salary='${data.salary}', start_dt='${data.start_dt}', end_dt='${data.end_dt}', state_id='${data.state_id}' Where id = '${req.body.salaryID}'`
+
   
 
-  conn.query(hourSQL, data , (err,rows) => {
+  conn.query(editSQL, data , (err,rows) => {
     if(err) console.log(err);
     res.redirect('/salaries')
   })

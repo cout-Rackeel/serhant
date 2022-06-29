@@ -42,12 +42,24 @@
       <li>
         <ul class="navbar"style="gap:2rem; padding: 10px;" >
           <li> <a href="/employees">Employees</a> </li>
+          <% if (my_session.loggedIn) {%> 
+
+          <% if (my_session.department = 'Accounts') {%> 
           <li> <a href="/salaries">Salaries</a> </li>
+          <% } %>  
+
+          <li> <a href="/salaries/employee/<%= my_session.emp_id%>">My Salary</a> </li>
+          
+          <% } %>  
         </ul>
       </li>
 
       <li>
-         
+         <% if(!my_session.loggedIn){ %> 
+          <a href="/login">Login</a>
+         <% }else{ %> 
+          <a href="/login/logout">Logout</a>
+         <%  }%> 
       </li>
     </ul>
   </nav>

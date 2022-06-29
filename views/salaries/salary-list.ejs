@@ -1,0 +1,40 @@
+<h2>Salaries</h2>
+
+<table class="table table-hover" style="margin-top: 30px;">
+  <thead>
+    <tr>
+      <th>Employee Id</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Department</th>
+      <th>Overate Rate</th>
+      <th>Total Work Hours</th>
+      <th>Overtime Hours</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Salary</th>
+      <th>State</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+      <% if (data.length){%> 
+          <tr>
+           <td> <%=data.emp_id%> </td>
+           <td> <%=data.f_name%> </td>
+           <td> <%=data.l_name%> </td>
+           <td> <%=data.department%> </td>
+           <td> <%=data.ovrtime_rate%> </td>
+           <td> <%=data.hours%> </td>
+           <td> <%=data.ovrtime_hrs%> </td>
+           <td> <%=data.start_dt.toLocaleString('sv-SE')%> </td>
+           <td> <%=data.end_dt.toLocaleString('sv-SE')%> </td>
+           <td> <%=(data.salary).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </td>
+           <td> <%=data.state%> </td>
+           <td> <a href="/salaries/sal-info/edit/<%=data.id%> "> Edit Salary Details </a> </td>
+          </tr>
+      <% }else{ %> 
+        <tr><td colspan="7" style="text-align: center;">No Employee Records entered</td></tr>
+      <% } %> 
+  </tbody>
+</table>
