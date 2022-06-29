@@ -1,0 +1,36 @@
+
+<div>
+  <button class="btn btn-secondary mx-3" > <a href="/employees/add-employee" style="color: #ffe600 ;">Add Employee</a></button>
+</div>
+<table class="table" style="margin-top: 30px;">
+  <thead>
+    <tr>
+      <th>Employee Id</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Department</th>
+      <th>Position</th>
+      <th>Email</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+      <% if (data.length){%> 
+
+        <% data.forEach(emp => { %>
+          <tr>
+           <td> <%=emp.emp_id%> </td>
+           <td> <%=emp.f_name%> </td>
+           <td> <%=emp.l_name%> </td>
+           <td> <%=emp.department%> </td>
+           <td> <%=emp.position%> </td>
+           <td> <%=emp.email%> </td>
+           <td> <a href="/salaries/sal-info/<%=emp.emp_id%> "> Add Salary Details </a> </td>
+          </tr>
+        <% }) %>
+
+      <% }else{ %> 
+        <tr><td colspan="7" style="text-align: center;">No Employee Records entered</td></tr>
+      <% } %> 
+  </tbody>
+</table>

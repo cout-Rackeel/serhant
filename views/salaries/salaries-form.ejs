@@ -1,0 +1,60 @@
+<div class="total-cont" style="width: 600px; margin:50px auto; border: 0.1px solid lightgray; padding: 30px; border-radius: 2px;">
+  <h2 class="form-title mb-4 pb-3" style="border-bottom: 0.1px solid lightgray ;">Salaries Form</h2>
+  <div class="form-cont">
+    <form action="/salaries/add-hours" method="post">
+
+      <div class="formControl mb-3">
+        <label for="email" class="form-label">ID :- '<%= empID %>'  </label>
+        <input type="hidden" name="emp_id" id="emp_id" class="form-control" value="'<%= empID %>'">
+      </div>
+      
+
+        <div class="formControl mb-3">
+          <label for="hours" class="form-label">Total Work hours</label>
+          <input type="number" name="hours" id="hours" class="form-control"  value="0">
+        </div>
+    
+        
+          <div class="formControl mb-3">
+            <label for="start_dt" class="form-label">Start Date</label>
+            <input type="datetime" name="start_dt" id="start_dt" class="form-control" required>
+          </div>
+
+          <div class="formControl mb-3">
+            <label for="end_dt" class="form-label">End Date</label>
+            <input type="datetime" name="end_dt" id="end_dt" class="form-control">
+          </div>
+        
+          <div class="formControl mb-3">
+            <label for="none" class="form-label">None</label>
+            <input type="radio" name="state" id="none" value="1" class="mx-3" checked>
+
+            <label for="absent" class="form-label">Absent</label>
+            <input type="radio" name="state" id="absent" value="2" class="mx-3">
+
+            <label for="sick" class="form-label">Sick</label>
+            <input type="radio" name="state" id="sick" value="3" class="mx-3">
+          </div>
+        
+  
+  
+      <div class="btn-cont">
+          <button class="btn" style="background-color:#ffe600; color: #333;">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="message">
+  <% if (messages.error) { %>
+    <p style="color:red"><%- messages.error %></p>
+<% } %>
+
+<% if (messages.success) { %>
+     <p style="color:green"><%- messages.success %></p>
+<% } %>
+</div>
+
+
+<!-- .toLocaleString('sv-SE') -->
+

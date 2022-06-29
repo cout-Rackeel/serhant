@@ -1,0 +1,26 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #00B7FF;
+}
+
+
+
+
+
+
+/* font-family: 'Amatic SC', cursive;
+font-family: 'Comfortaa', cursive;
+font-family: 'Dancing Script', cursive;
+font-family: 'Lato', sans-serif;
+font-family: 'Montserrat', sans-serif;
+font-family: 'Mukta', sans-serif;
+font-family: 'Poppins', sans-serif;
+font-family: 'Source Sans 3', sans-serif;
+font-family: 'Tapestry', cursive;
+font-family: 'Zen Loop', cursive; */
