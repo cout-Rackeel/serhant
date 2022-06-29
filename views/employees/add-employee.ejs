@@ -1,33 +1,33 @@
-<div class="total-cont">
-  <div class="form-title"></div>
+<div class="total-cont" style="width: 600px; margin:50px auto; border: 0.1px solid lightgray; padding: 30px; border-radius: 2px;">
+  <h2 class="form-title mb-4 pb-3" style="border-bottom: 0.1px solid lightgray ;">Add Employee</h2>
 
   <div class="form-cont" >
     <form action="/employees/add" method="post">
   
       <div class="form-group">
   
-        <div class="formControl">
-          <label for="f_name">First Name</label>
-          <input type="text" name="f_name" id="f_name">
+        <div class="formControl  mb-3 mb-3">
+          <label class="form-label" for="f_name">First Name</label>
+          <input class="form-control" type="text" name="f_name" id="f_name">
         </div>
     
-        <div class="formControl">
-          <label for="l_name">Last Name</label>
-          <input type="text" name="l_name" id="l_name">
+        <div class="formControl  mb-3">
+          <label class="form-label" for="l_name">Last Name</label>
+          <input class="form-control" type="text" name="l_name" id="l_name">
         </div>
   
       </div>
   
-      <div class="formControl">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email">
+      <div class="formControl  mb-3">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-control" type="email" name="email" id="email">
       </div>
   
-      <div class="form-group">
+      <div class="form-group on">
   
-        <div class="formControl">
-          <label for="dep">Department</label>
-          <select name="dep" id="dep">
+        <div class="formControl  mb-3">
+          <label class="form-label" for="dep">Department</label>
+          <select name="dep" id="dep" class="form-control">
             <option value="1">Operations</option>
             <option value="2">Sales & Marketing</option>
             <option value="3">Administration</option>
@@ -35,9 +35,9 @@
           </select>
         </div>
   
-        <div class="formControl">
-          <label for="pos">Position</label>
-          <select name="pos" id="pos">
+        <div class="formControl  mb-3">
+          <label class="form-label" for="pos">Position</label>
+          <select name="pos" id="pos" class="form-control">
             <option value="1">Supervisior</option>
             <option value="2">Assistant Supervisior</option>
             <option value="3">Staff</option>
@@ -47,7 +47,7 @@
       </div>
   
       <div class="btn-cont">
-          <button>Send</button>
+          <button class="btn" style="background-color:#ffe600; color: #333;">Send</button>
       </div>
     </form>
   </div>
@@ -55,3 +55,18 @@
 
 
 </div>
+
+
+<div class="message">
+  <% if (messages.error) { %>
+    <p style="color:red"><%- messages.error %></p>
+<% } %>
+
+<% if (messages.success) { %>
+     <p style="color:green"><%- messages.success %></p>
+<% } %>
+</div>
+
+
+<!-- .toLocaleString('sv-SE') -->
+
