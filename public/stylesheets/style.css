@@ -9,6 +9,22 @@ a {
   color: #00B7FF;
 }
 
+html { height: 100%; }
+
+body{
+  position: relative;
+  min-height: 100%;
+  padding-bottom: 50px;
+  
+}
+
+.form-group.on{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
 
 
 
