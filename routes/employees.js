@@ -23,8 +23,6 @@ function genEmpId(min = 1000, max = 9999) {
     return rand + '-' + s4 ;
 }
 
-
-
 router.get('/', function(req, res, next) {
   var empSQL = " SELECT em.emp_id , em.f_name , em.l_name , dp.department , p.position, u.email FROM employees em , departments dp, employee_departments ed, positions p, employee_positions ep, users u WHERE dp.id = ed.dep_id AND p.id = ep.pos_id AND ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id AND u.emp_id = em.emp_id "
 
@@ -38,7 +36,33 @@ router.get('/', function(req, res, next) {
       data:rows,
       my_session : req.session
     }
-    res.render('employees/employees-list', locals);
+    res.render('employees/employees-list-all', locals);
+  })
+});
+
+router.get('/department', function(req, res, next) {
+  var empSQL = " SELECT em.emp_id , em.f_name , em.l_name , dp.department , p.position, u.email FROM employees em , departments dp, employee_departments ed, positions p, employee_positions ep, users u WHERE dp.id = ed.dep_id AND p.id = ep.pos_id AND ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id AND u.emp_id = em.emp_id AND dp.department = '"+ req.session.department +"' "
+
+  conn.query(empSQL , (err,rows) => {
+    if(err){
+      console.log(err);
+    }else{
+      if(req.session.position == 'Supervisor'){
+        var locals = {
+          title : 'Serhant Construction',
+          stylesheet:'',
+          bootstrap:true,
+          data:rows,
+          my_session : req.session
+        }
+        res.render('employees/employees-list', locals);
+      }else{
+        req.flash('error','You dont have access here');
+        res.redirect('/');
+      }
+    }
+
+
   })
 });
 
@@ -90,7 +114,7 @@ router.post('/add' , (req,res,next) => {
                 console.log(hash);
                 conn.query('Insert Into users set ?' , set4 , (err,rows) => { 
                   if(!err){
-                    res.redirect('/employees/add-employee')
+                    res.redirect('/employees/department')
                   }else{throw err}
               })
               })

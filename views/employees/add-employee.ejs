@@ -1,3 +1,5 @@
+<%= JSON.stringify(my_session) %>
+
 <div class="total-cont" style="width: 600px; margin:50px auto; border: 0.1px solid lightgray; padding: 30px; border-radius: 2px;">
   <h2 class="form-title mb-4 pb-3" style="border-bottom: 0.1px solid lightgray ;">Add Employee</h2>
 
@@ -25,15 +27,16 @@
   
       <div class="form-group on">
   
-        <div class="formControl  mb-3">
-          <label class="form-label" for="dep">Department</label>
-          <select name="dep" id="dep" class="form-control">
-            <option value="1">Operations</option>
-            <option value="2">Sales & Marketing</option>
-            <option value="3">Administration</option>
-            <option value="4">Accounts</option>
-          </select>
-        </div>
+            <div class="formControl  mb-3">
+              <label class="form-label" for="dep">Department</label>
+              <select name="dep" id="dep" class="form-control">
+                <option value="1">Operations</option>
+                <option value="2">Sales & Marketing</option>
+                <option value="3">Administration</option>
+                <option value="4">Accounts</option>
+              </select>
+            </div>
+       
   
         <div class="formControl  mb-3">
           <label class="form-label" for="pos">Position</label>

@@ -1,4 +1,5 @@
-<h2>Salaries</h2>
+<h2 style="text-align: center;">Salaries</h2>
+
 
 <table class="table table-hover" style="margin-top: 30px;">
   <thead>
@@ -19,22 +20,39 @@
   </thead>
   <tbody>
       <% if (data.length){%> 
+
+        <% data.forEach(emp => { %>
           <tr>
-           <td> <%=data.emp_id%> </td>
-           <td> <%=data.f_name%> </td>
-           <td> <%=data.l_name%> </td>
-           <td> <%=data.department%> </td>
-           <td> <%=data.ovrtime_rate%> </td>
-           <td> <%=data.hours%> </td>
-           <td> <%=data.ovrtime_hrs%> </td>
-           <td> <%=data.start_dt.toLocaleString('sv-SE')%> </td>
-           <td> <%=data.end_dt.toLocaleString('sv-SE')%> </td>
-           <td> <%=(data.salary).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </td>
-           <td> <%=data.state%> </td>
-           <td> <a href="/salaries/sal-info/edit/<%=data.id%> "> Edit Salary Details </a> </td>
+           <td> <%=emp.emp_id%> </td>
+           <td> <%=emp.f_name%> </td>
+           <td> <%=emp.l_name%> </td>
+           <td> <%=emp.department%> </td>
+           <td> <%=emp.ovrtime_rate%> </td>
+           <td> <%=emp.hours%> </td>
+           <td> <%=emp.ovrtime_hrs%> </td>
+
+           <% if (emp.cycle_strt != null) {%> 
+            <td> <%=emp.cycle_strt.toLocaleString('sv-SE')%> </td>
+             <%}else{%> 
+               <td> <%=emp.cycle_strt%> </td>
+            <%}%> 
+
+
+            <%  if (emp.cycle_end != null) {%> 
+              <td> <%=emp.cycle_end.toLocaleString('sv-SE')%> </td>
+               <%}else{%> 
+                 <td> <%=emp.cycle_end%> </td> 
+              <%}%> 
+
+           <td> <%=(emp.salary).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </td>
+           <td> <%=emp.state%> </td>
+           <td> <a href="/salaries/sal-info/edit/<%=emp.id%> "> Edit Salary Details </a> </td>
           </tr>
+        <% }) %>
+          <%= data.workHrs  %> 
       <% }else{ %> 
         <tr><td colspan="7" style="text-align: center;">No Employee Records entered</td></tr>
       <% } %> 
   </tbody>
 </table>
+

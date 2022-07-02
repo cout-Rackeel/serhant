@@ -1,7 +1,4 @@
 
-<div>
-  <button class="btn btn-secondary mx-3" > <a href="/employees/add-employee" style="color: #ffe600 ;">Add Employee</a></button>
-</div>
 <table class="table table-hover" style="margin-top: 30px;">
   <thead>
     <tr>
@@ -11,7 +8,7 @@
       <th>Department</th>
       <th>Position</th>
       <th>Email</th>
-      <th colspan="2">Action</th>
+      <th colspan="2" style="text-align: center;">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -26,8 +23,8 @@
            <td> <%=emp.position%> </td>
            <td> <%=emp.email%> </td>
            <td> <a href="/salaries/sal-info/<%=emp.emp_id%> "> Add Salary Details </a> </td>
-           <% if( emp.department =='Accounts') { %> 
-           <td> <a href="/salaries/payslip/<%=emp.emp_id%> "> Generate Payslip </a> </td></td>
+           <% if( emp.department = 'Accounts') { %> 
+           <td> <a href="/salaries/payslip/<%=emp.emp_id%> "> Generate Payslip </a> </td>
            <% } %> 
           </tr>
         <% }) %>
