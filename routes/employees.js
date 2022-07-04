@@ -26,46 +26,56 @@ function genEmpId(min = 1000, max = 9999) {
 router.get('/', function(req, res, next) {
   var empSQL = " SELECT em.emp_id , em.f_name , em.l_name , dp.department , p.position, u.email FROM employees em , departments dp, employee_departments ed, positions p, employee_positions ep, users u WHERE dp.id = ed.dep_id AND p.id = ep.pos_id AND ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id AND u.emp_id = em.emp_id "
 
-  conn.query(empSQL , (err,rows) => {
-    if(err) throw err
+  if(req.session.loggedIn && req.session.department == 'Accounts'){
+    conn.query(empSQL , (err,rows) => {
+      if(err) throw err
+  
+      var locals = {
+        title : 'Serhant Construction',
+        stylesheet:'',
+        bootstrap:true,
+        data:rows,
+        my_session : req.session
+      }
+      res.render('employees/employees-list-all', locals);
+    })
+  }else{
+    res.redirect('/')
+  }
 
-    var locals = {
-      title : 'Serhant Construction',
-      stylesheet:'',
-      bootstrap:true,
-      data:rows,
-      my_session : req.session
-    }
-    res.render('employees/employees-list-all', locals);
-  })
 });
 
 router.get('/department', function(req, res, next) {
   var empSQL = " SELECT em.emp_id , em.f_name , em.l_name , dp.department , p.position, u.email FROM employees em , departments dp, employee_departments ed, positions p, employee_positions ep, users u WHERE dp.id = ed.dep_id AND p.id = ep.pos_id AND ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id AND u.emp_id = em.emp_id AND dp.department = '"+ req.session.department +"' "
 
-  conn.query(empSQL , (err,rows) => {
-    if(err){
-      console.log(err);
-    }else{
-      if(req.session.position == 'Supervisor'){
-        var locals = {
-          title : 'Serhant Construction',
-          stylesheet:'',
-          bootstrap:true,
-          data:rows,
-          my_session : req.session
-        }
-        res.render('employees/employees-list', locals);
+  if(req.session.loggedIn && req.session.position == 'Supervisor'){
+    conn.query(empSQL , (err,rows) => {
+      if(err){
+        console.log(err);
       }else{
-        req.flash('error','You dont have access here');
-        res.redirect('/');
+        if(req.session.position == 'Supervisor'){
+          var locals = {
+            title : 'Serhant Construction',
+            stylesheet:'',
+            bootstrap:true,
+            data:rows,
+            my_session : req.session
+          }
+          res.render('employees/employees-list', locals);
+        }else{
+          req.flash('error','You dont have access here');
+          res.redirect('/');
+        }
       }
-    }
-
-
-  })
+  
+  
+    })
+  }else{
+    res.redirect('/')
+  }
+  
 });
-
+  
 router.get('/add-employee', function(req, res, next) {
   
 
@@ -75,7 +85,11 @@ router.get('/add-employee', function(req, res, next) {
       bootstrap:true,
       my_session : req.session
     }
+    if(req.session.loggedIn && req.session.department == 'Accounts'){
     res.render('employees/add-employee', locals);
+    }else{
+      res.redirect('/')
+    }
 });
 
 router.post('/add' , (req,res,next) => {
