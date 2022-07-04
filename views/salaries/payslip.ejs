@@ -1,0 +1,65 @@
+
+
+<div class="body-cont">
+   <div class="payslip-cont">
+
+      <div class="topArea payslip-item">
+         <h2>Serhant Construction</h2>
+
+         <div style="width: 100%; gap: 1rem; display: grid; grid-template-columns: 1fr 1fr; place-items: center; margin: 10px 0px;">
+            <div>
+               <p>Employee Name :- <%= data[0].f_name %> <%= data[0].l_name %> </p>
+               <p>Employee Department:- <%= data[0].department %> </p>
+            </div>
+            <div>
+               <p>Employee ID :- <%= data[0].emp_id %> </p>
+               <p>Employee NIS :- <%= data[0].nis %> </p>
+            </div>
+         </div>
+         
+         
+        
+      </div>
+         
+      <div class="middle m1 payslip-item">
+         <h5>Salary Hours</h5>
+         <% details.forEach(element => { %>
+            <div style="margin: 15px 0px;">
+               <p>Paycycle :- <%= element.cycle_strt.toLocaleDateString() %> </p>
+               <p>Totals hours:-<%= element.tot_hours %> </p>
+               <p>Overtime hours:-<%= element.ovrtime_hrs %> </p>
+            </div>
+         <% }) %>
+      </div>
+      
+      <div class="blank"></div>
+      
+
+      <div class="middle  m2 payslip-item">
+         <h5>Salary Pay</h5>
+         <% details.forEach(element => { %>
+            <div style="margin: 15px 0px;">
+               <p>Basic Pay :- <%= (element.basic_pay).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </p>
+               <p>Overtime Pay:- <%= (element.ovrtime_pay).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </p>
+               <p>Total Salary:- <%= (element.tot_salary).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </p>
+            </div>
+         <% }) %>
+
+      </div>
+      
+      <div class="bottom payslip-item">
+         <div>
+            <div>
+               <h5>Accountant Signature :- 
+                  <span style="text-decoration: underline; padding: 0px 20px 30px 20px;">
+                     <%= my_session.full_nm %> 
+                   </span> 
+              </h5>
+            </div>
+            
+         </div>
+      </div>
+      
+      </div>
+
+</div>

@@ -7,7 +7,7 @@
   .navbar{
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     background-color: rgba(51, 51, 51, 0.726);
     height: 70px;
@@ -36,31 +36,41 @@
         <span>Serhant</span>  
         <span>Construction</span> 
         <i class="fa-solid fa-helmet-safety"></i> 
+        </li>
         </a> 
       </li>
     
+      
       <li>
-        <ul class="navbar"style="gap:2rem; padding: 10px;" >
-          <li> <a href="/employees">Employees</a> </li>
+        <ul style="display: flex; width: 100%; gap: 2rem;" >
+      
           <% if (my_session.loggedIn) {%> 
+            
+            <% if (my_session.department == "Accounts") {%> 
+            <li> <a href="/salaries">All Salaries</a> </li>
+            <li> <a href="/employees">All Employees</a> </li>
+            <% } %>  
 
-          <% if (my_session.department = 'Accounts') {%> 
-          <li> <a href="/salaries">Salaries</a> </li>
-          <% } %>  
-
-          <li> <a href="/salaries/employee/<%= my_session.emp_id%>">My Salary</a> </li>
-          
-          <% } %>  
+            <% if (my_session.position == "Supervisor") {%> 
+              <li> <a href="/salaries/department">Deparment Salaries</a> </li>
+              <% } %>  
+              <li> <a href="/employees/department">Department Employees</a> </li>
+            <li> <a href="/salaries/employee/<%= my_session.emp_id%>">My Salary</a> </li>
+            
+            <% } %>  
+         <!-- here 1 -->
         </ul>
       </li>
 
       <li>
-         <% if(!my_session.loggedIn){ %> 
+        <% if(!my_session.loggedIn){ %> 
           <a href="/login">Login</a>
          <% }else{ %> 
           <a href="/login/logout">Logout</a>
          <%  }%> 
+        <!-- here 2 -->
       </li>
+      
     </ul>
   </nav>
 </div>

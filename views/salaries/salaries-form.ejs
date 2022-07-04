@@ -15,15 +15,15 @@
         </div>
     
         
-          <div class="formControl mb-3">
-            <label for="start_dt" class="form-label">Start Date</label>
-            <input type="datetime" name="start_dt" id="start_dt" class="form-control" required>
-          </div>
+        <div class="formControl  mb-3">
+          <label class="form-label" for="cycle">Paycycle</label>
+          <select name="cycle" id="cycle" class="form-control">
+              <% cycles.forEach(cycle => { %>
+                <option value="<%=cycle.id%>">FROM <%= cycle.cycle_strt.toLocaleDateString() %> --TO-- <%= cycle.cycle_end.toLocaleDateString() %></option>
+                <% }) %>
+          </select>
+        </div>
 
-          <div class="formControl mb-3">
-            <label for="end_dt" class="form-label">End Date</label>
-            <input type="datetime" name="end_dt" id="end_dt" class="form-control">
-          </div>
         
           <div class="formControl mb-3">
             <label for="none" class="form-label">None</label>
