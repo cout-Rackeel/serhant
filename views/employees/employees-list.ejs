@@ -31,9 +31,6 @@
            <td> <%=emp.email%> </td>
            <td> <a href="/salaries/sal-info/<%=emp.emp_id%> "> Add Salary Details </a> </td>
            <td> <a href="/salaries/payslip/<%=emp.emp_id%> "> Generate Payslip </a> </td>
-           <% if( my_session.position =='Supervisor') { %> 
-            <td> <a href="/salaries/payslip/<%=emp.emp_id%> "> Add Sick or Absent Days </a> </td>
-           <% } %> 
           </tr>
         <% }) %>
 
