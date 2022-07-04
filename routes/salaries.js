@@ -72,7 +72,7 @@ router.get('/', function(req, res, next) {
       return salDets = result
     });
 
-
+    if(req.session.loggedIn && req.session.department == 'Accounts'){
   conn.query(salarySQL, (err,rows)=> {
     if(!err) {
       conn.query('Select * From paycycles', (err,result)=>{
@@ -95,10 +95,10 @@ router.get('/', function(req, res, next) {
       })
     }else{
       console.log(err);
-    
-  }
-
-  });
+  } });
+}else{
+  res.redirect('/')
+}
   
 });
 
@@ -127,7 +127,7 @@ router.post('/', function(req, res, next) {
       return salDets = result
     });
 
-
+    if(req.session.loggedIn && req.session.department == 'Accounts'){
   conn.query(salarySQL, (err,rows)=> {
     if(!err) {
       conn.query('Select * From paycycles', (err,result)=>{
@@ -153,7 +153,9 @@ router.post('/', function(req, res, next) {
   }
 
   });
-
+    }else{
+      res.redirect('/')
+    }
 });
 
 router.get('/department', function(req, res, next) {
