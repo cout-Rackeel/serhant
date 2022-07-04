@@ -95,6 +95,13 @@ body{
   grid-area: bottom;
 }
 
+.incomplete{
+  background-color: hsla(54, 100%, 50%, 0.5);
+}
+.absent{
+  background-color: hsla(352, 100%, 51%, 0.5);
+}
+
 
 
 /* font-family: 'Amatic SC', cursive;

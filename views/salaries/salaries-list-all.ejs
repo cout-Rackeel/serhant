@@ -51,8 +51,8 @@
 
    
         <% data.forEach(emp => { %>
-          
-            <tr>
+         
+            <tr class="<%= emp.state %>">
               <td> <%=emp.emp_id%> </td>
               <td> <%=emp.f_name%> </td>
               <td> <%=emp.l_name%> </td>
@@ -104,9 +104,7 @@
           success: function(){
              console.log(JSON.stringify(this.fields))
           }
-      })
-
-
+      });
       
   });
 });

@@ -1,5 +1,19 @@
 <h2 style="text-align: center;">Salaries</h2>
 
+<form action="/salaries/employee/<%= my_session.emp_id %> " method="post" id="searchSalary" style="padding:0px 10px;">
+  <div><legend>Search for Paycycle</legend></div>
+  <div class="formControl  mb-3" style="display: flex; width: 100%; gap: 1rem;">
+    <select name="cycle" id="cycle" class="form-control" style="width: 50% ;">
+        <% cycles.forEach(cycle => { %>
+          <option value="<%=cycle.id%>">FROM <%= cycle.cycle_strt.toLocaleDateString() %> --TO-- <%= cycle.cycle_end.toLocaleDateString() %></option>
+          <% }) %>
+    </select>
+    
+      <button type="submit">Search</button>
+    
+    
+  </div>
+</form>
 
 <table class="table table-hover" style="margin-top: 30px;">
   <thead>
@@ -56,3 +70,20 @@
   </tbody>
 </table>
 
+<script>
+  $(document).ready(function(){
+      $("form#searchSalary").on('submit', function(e){
+      var fields = {cycle: $('select[name=cycle]').val(), 
+                 };
+      $.ajax({
+          type: 'post',
+          url: '/salaries',
+          data: fields,
+          dataType: 'json',
+          success: function(){
+             console.log(JSON.stringify(this.fields))
+          }
+      });
+  });
+});
+</script>
