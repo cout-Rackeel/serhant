@@ -54,7 +54,7 @@ router.get('/', function(req, res, next) {
   let salarySQL = "SELECT s.id, em.emp_id , em.f_name , em.l_name ,d.department , p.position , d.ovrtime_rate,s.hours, s.ovrtime_hrs, s.salary, pc.cycle_strt , pc.cycle_end, st.state  FROM employees em, departments d, employee_departments ed, positions p,  employee_positions ep, postion_wages pw, employee_salaries s , paycycles pc , states st WHERE ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id   AND ed.dep_id = d.id AND ep.pos_id = p.id  AND pw.pos_id = p.id AND s.cycle_id = pc.id AND pw.dep_id = d.id  AND s.emp_id = em.emp_id AND s.state_id = st.id AND s.cycle_id = '"+str+"'"
 
   getSummaryDetsAll = (callback) => {
-    let salSummaryAllSQL = "SELECT d.department , Sum(s.hours) as tot_wrk_hrs, SUM(s.ovrtime_hrs) as tot_ovr_time_hrs, Sum(s.salary) as tot_salary FROM employees em, departments d, employee_departments ed, employee_salaries s , states st WHERE ed.emp_id = em.emp_id AND ed.dep_id = d.id AND s.emp_id = em.emp_id AND s.state_id = st.id AND NOT s.salary <= 0  AND NOT s.state_id = 2 AND NOT s.state_id = 3 "
+    let salSummaryAllSQL = "SELECT d.department , Sum(s.hours) as tot_wrk_hrs, SUM(s.ovrtime_hrs) as tot_ovr_time_hrs, Sum(s.salary) as tot_salary FROM employees em, departments d, employee_departments ed, employee_salaries s , paycycles pc, states st WHERE ed.emp_id = em.emp_id AND ed.dep_id = d.id AND s.emp_id = em.emp_id AND s.state_id = st.id AND s.cycle_id = pc.id AND NOT s.salary <= 0  AND NOT s.state_id = 2 AND NOT s.state_id = 3 GROUP BY pc.id"
   
     conn.query(salSummaryAllSQL, (err,rows) => {
       if (err){
