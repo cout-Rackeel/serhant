@@ -11,7 +11,11 @@
       <th>Department</th>
       <th>Position</th>
       <th>Email</th>
+      <% if( my_session.position =='Supervisor') { %> 
+        <th colspan="3" style="text-align: center;">Action</th>
+       <% }else{ %> 
       <th colspan="2">Action</th>
+      <% } %> 
     </tr>
   </thead>
   <tbody>
@@ -26,8 +30,9 @@
            <td> <%=emp.position%> </td>
            <td> <%=emp.email%> </td>
            <td> <a href="/salaries/sal-info/<%=emp.emp_id%> "> Add Salary Details </a> </td>
-           <% if( emp.department =='Accounts') { %> 
-           <td> <a href="/salaries/payslip/<%=emp.emp_id%> "> Generate Payslip </a> </td></td>
+           <td> <a href="/salaries/payslip/<%=emp.emp_id%> "> Generate Payslip </a> </td>
+           <% if( my_session.position =='Supervisor') { %> 
+            <td> <a href="/salaries/payslip/<%=emp.emp_id%> "> Add Sick or Absent Days </a> </td>
            <% } %> 
           </tr>
         <% }) %>

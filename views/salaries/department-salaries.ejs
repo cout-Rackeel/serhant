@@ -18,6 +18,7 @@
       <th>Total Hours</th>
       <th>Normal Work Hours</th>
       <th>Overtime Hours</th>
+      <th>Paycycle ID</th>
       <th>Action</th>
     </tr>
   </thead>
@@ -34,6 +35,7 @@
               <td> <%=emp.hours + emp.ovrtime_hrs%> </td>
               <td> <%=emp.hours%> </td>
               <td> <%=emp.ovrtime_hrs%> </td>
+              <td> <%=emp.cycle_id%> </td>
               <td> <a href="/salaries/sal-info/edit/<%=emp.id%> "> Edit Salary Details </a> </td>
              </tr>
         <% }) %>

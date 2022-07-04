@@ -24,11 +24,13 @@
       <div class="middle m1 payslip-item">
          <h5>Salary Hours</h5>
          <% details.forEach(element => { %>
+            <% if(element.tot_hours != 0) { %>  
             <div style="margin: 15px 0px;">
                <p>Paycycle :- <%= element.cycle_strt.toLocaleDateString() %> </p>
                <p>Totals hours:-<%= element.tot_hours %> </p>
                <p>Overtime hours:-<%= element.ovrtime_hrs %> </p>
             </div>
+            <% } %> 
          <% }) %>
       </div>
       
@@ -38,11 +40,14 @@
       <div class="middle  m2 payslip-item">
          <h5>Salary Pay</h5>
          <% details.forEach(element => { %>
+            <% if(element.basic_pay != 0  && element.tot_salary != 0) { %> 
             <div style="margin: 15px 0px;">
                <p>Basic Pay :- <%= (element.basic_pay).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </p>
                <p>Overtime Pay:- <%= (element.ovrtime_pay).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </p>
                <p>Total Salary:- <%= (element.tot_salary).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </p>
             </div>
+            <% } %> 
+
          <% }) %>
 
       </div>

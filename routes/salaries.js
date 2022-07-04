@@ -10,9 +10,8 @@ salaryCalc = (normHrs = 0 , ovrHrs = 0 , wage , data) => {
   let normHrsWages = normHrs * wage.hrly_wage
   let ovrHrsWages = ovrHrs * (wage.hrly_wage * wage.ovrtime_rate);
 
-  data.basic_pay = normHrsWages;
-  data.ovrtime_pay = ovrHrsWages
-  data.salary =  data.basic_pay + data.ovrtime_pay
+  
+  data.salary =  normHrsWages + ovrHrsWages
 
 }
 
@@ -122,7 +121,7 @@ router.post('/', function(req, res, next) {
   }
 
 
-//   //* Call back Function call
+  //* Call back Function call
     getSummaryDetsAll(function(result){
       return salDets = result
     });
@@ -161,7 +160,7 @@ router.post('/', function(req, res, next) {
 router.get('/department', function(req, res, next) {
   let salDets
 
-  let salarySQL = "SELECT s.id, em.emp_id , em.f_name , em.l_name ,d.department , p.position , d.ovrtime_rate,s.hours, s.ovrtime_hrs, s.salary, pc.cycle_strt , pc.cycle_end, st.state  FROM employees em, departments d, employee_departments ed, positions p,  employee_positions ep, postion_wages pw, employee_salaries s , paycycles pc , states st WHERE ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id   AND ed.dep_id = d.id AND ep.pos_id = p.id  AND pw.pos_id = p.id AND s.cycle_id = pc.id AND pw.dep_id = d.id  AND s.emp_id = em.emp_id AND s.state_id = st.id AND d.department = '"+req.session.department+"'";
+  let salarySQL = "SELECT s.id, em.emp_id , em.f_name , em.l_name ,d.department , p.position , d.ovrtime_rate,s.hours, s.ovrtime_hrs, s.salary, pc.cycle_strt , pc.cycle_end, pc.id as cycle_id, st.state  FROM employees em, departments d, employee_departments ed, positions p,  employee_positions ep, postion_wages pw, employee_salaries s , paycycles pc , states st WHERE ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id   AND ed.dep_id = d.id AND ep.pos_id = p.id  AND pw.pos_id = p.id AND s.cycle_id = pc.id AND pw.dep_id = d.id  AND s.emp_id = em.emp_id AND s.state_id = st.id AND d.department = '"+req.session.department+"'";
 
   getSummaryDets = (callback) => {
     let salSummarySQL = "SELECT d.department , Sum(s.hours) as tot_wrk_hrs, SUM(s.ovrtime_hrs) as tot_ovr_time_hrs, Sum(s.salary) as tot_salary FROM employees em,departments d,employee_departments ed,employee_salaries s ,states st WHERE ed.emp_id = em.emp_id AND ed.dep_id = d.id AND s.emp_id = em.emp_id AND s.state_id = st.id AND ed.dep_id = "+req.session.department_id+" AND NOT s.salary <= 0  AND NOT s.state_id = 2 AND NOT s.state_id = 3 GROUP BY d.department"
@@ -250,21 +249,6 @@ router.get('/sal-info/:id', function(req, res, next) {
  
 });
 
-router.get('/find' , function(req,res,next){
-  conn.query('Select * From paycycles', (err,rows) => {
-    var locals = {
-      title : 'Serhant Construction',
-      stylesheet:'',
-      my_session : req.session,
-      cycles:rows
-    };
-    res.render('salaries/paycycle-select',locals)
-  })
-})
-
-router.get('/result/:id', function(req,res,next){
-
-})
 
 router.post('/add-hours' , (req,res,next) => {
 
@@ -284,24 +268,21 @@ router.post('/add-hours' , (req,res,next) => {
    // Calling callback
    var retVal = getWages(function(result){
     wages = result;
-    data = {
+    data1 = {
       emp_id: req.body.emp_id,
-      tot_hours:req.body.hours,
       hours: workHrsCalc(req.body.hours,wages),
       ovrtime_hrs: overtimeCalc(req.body.hours,wages),
-      basic_pay:null,
-      ovrtime_pay:null,
       salary:null,
-      start_dt: checkDate(req.body.start_dt),
-      end_dt: checkDate(req.body.end_dt),
       state_id: req.body.state,
+      cycle_id: req.body.cycle
     }
+
     salaryCalc(data.hours,data.ovrtime_hrs,wages , data);
     console.log(data.salary);
     
     let hourSql = " INSERT INTO employee_salaries SET ?"
 
-    conn.query( hourSql , data , (err , rows) => {
+    conn.query( hourSql , data1 , (err , rows) => {
       if(err) throw err;
       console.log(data.emp_id);
       res.redirect('/salaries')
@@ -311,8 +292,6 @@ router.post('/add-hours' , (req,res,next) => {
     });
   // End of Callback
   console.log(wages);
-
-   
   
   
 })
@@ -372,12 +351,9 @@ let data = {};
       tot_hours:req.body.hours,
       hours: workHrsCalc(req.body.hours,wages),
       ovrtime_hrs: overtimeCalc(req.body.hours,wages),
-      basic_pay:null,
-      ovrtime_pay:null,
       salary:null,
-      start_dt: checkDate(req.body.start_dt),
-      end_dt: checkDate(req.body.end_dt),
       state_id: req.body.state,
+      cycle_id: req.body.cycle
     }
 
     salaryCalc(data.hours,data.ovrtime_hrs,wages , data);
