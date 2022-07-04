@@ -2,6 +2,7 @@ var express = require('express');
 const conn = require('../lib/db');
 var router = express.Router();
 var wages;
+var paycycle = '';
 
 //* Functions
 
@@ -48,8 +49,9 @@ checkDate = (date) => {
 
 router.get('/', function(req, res, next) {
   let salDets;
+  let str = req.body.cycle || 4 ;
   
-  let salarySQL = "SELECT s.id, em.emp_id , em.f_name , em.l_name ,d.department , p.position , d.ovrtime_rate,s.hours, s.ovrtime_hrs, s.salary, pc.cycle_strt , pc.cycle_end, st.state  FROM employees em, departments d, employee_departments ed, positions p,  employee_positions ep, postion_wages pw, employee_salaries s , paycycles pc , states st WHERE ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id   AND ed.dep_id = d.id AND ep.pos_id = p.id  AND pw.pos_id = p.id AND s.cycle_id = pc.id AND pw.dep_id = d.id  AND s.emp_id = em.emp_id AND s.state_id = st.id";
+  let salarySQL = "SELECT s.id, em.emp_id , em.f_name , em.l_name ,d.department , p.position , d.ovrtime_rate,s.hours, s.ovrtime_hrs, s.salary, pc.cycle_strt , pc.cycle_end, st.state  FROM employees em, departments d, employee_departments ed, positions p,  employee_positions ep, postion_wages pw, employee_salaries s , paycycles pc , states st WHERE ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id   AND ed.dep_id = d.id AND ep.pos_id = p.id  AND pw.pos_id = p.id AND s.cycle_id = pc.id AND pw.dep_id = d.id  AND s.emp_id = em.emp_id AND s.state_id = st.id AND s.cycle_id = '"+str+"'"
 
   getSummaryDetsAll = (callback) => {
     let salSummaryAllSQL = "SELECT d.department , Sum(s.hours) as tot_wrk_hrs, SUM(s.ovrtime_hrs) as tot_ovr_time_hrs, Sum(s.salary) as tot_salary FROM employees em, departments d, employee_departments ed, employee_salaries s , states st WHERE ed.emp_id = em.emp_id AND ed.dep_id = d.id AND s.emp_id = em.emp_id AND s.state_id = st.id AND NOT s.salary <= 0  AND NOT s.state_id = 2 AND NOT s.state_id = 3 "
@@ -72,24 +74,86 @@ router.get('/', function(req, res, next) {
 
 
   conn.query(salarySQL, (err,rows)=> {
-    if(err) {
-      console.log(err);
+    if(!err) {
+      conn.query('Select * From paycycles', (err,result)=>{
+        if(!err){
+          var locals = {
+            title : 'Serhant Construction',
+            stylesheet:'/stylesheets/salaries.css',
+            my_session : req.session,
+            bootstrap:true,
+            salDets:salDets,
+            cycles:result,
+            data:rows,
+          };
+          
+          res.render('salaries/salaries-list-all', locals);
+          
+        }else{
+          console.log('Query 2', err);
+        }
+      })
     }else{
-
-    var locals = {
-      title : 'Serhant Construction',
-      stylesheet:'/stylesheets/salaries.css',
-      my_session : req.session,
-      bootstrap:true,
-      data:rows,
-      salDets:salDets
-    };
-
-    res.render('salaries/salaries-list-all', locals);
+      console.log(err);
+    
   }
 
   });
   
+});
+
+router.post('/', function(req, res, next) {
+  let salDets;
+  let str = req.body.cycle
+  
+  let salarySQL = "SELECT s.id, em.emp_id , em.f_name , em.l_name ,d.department , p.position , d.ovrtime_rate,s.hours, s.ovrtime_hrs, s.salary, pc.cycle_strt , pc.cycle_end, st.state  FROM employees em, departments d, employee_departments ed, positions p,  employee_positions ep, postion_wages pw, employee_salaries s , paycycles pc , states st WHERE ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id   AND ed.dep_id = d.id AND ep.pos_id = p.id  AND pw.pos_id = p.id AND s.cycle_id = pc.id AND pw.dep_id = d.id  AND s.emp_id = em.emp_id AND s.state_id = st.id AND s.cycle_id = " + str
+
+  getSummaryDetsAll = (callback) => {
+    let salSummaryAllSQL = "SELECT d.department , Sum(s.hours) as tot_wrk_hrs, SUM(s.ovrtime_hrs) as tot_ovr_time_hrs, Sum(s.salary) as tot_salary FROM employees em, departments d, employee_departments ed, employee_salaries s , states st WHERE ed.emp_id = em.emp_id AND ed.dep_id = d.id AND s.emp_id = em.emp_id AND s.state_id = st.id AND NOT s.salary <= 0  AND NOT s.state_id = 2 AND NOT s.state_id = 3 "
+  
+    conn.query(salSummaryAllSQL, (err,rows) => {
+      if (err){
+        console.log(err);
+      }else{
+        return callback(rows[0])
+      }
+    })
+  
+  }
+
+
+//   //* Call back Function call
+    getSummaryDetsAll(function(result){
+      return salDets = result
+    });
+
+
+  conn.query(salarySQL, (err,rows)=> {
+    if(!err) {
+      conn.query('Select * From paycycles', (err,result)=>{
+        if(!err){
+          var locals = {
+            title : 'Serhant Construction',
+            stylesheet:'/stylesheets/salaries.css',
+            my_session : req.session,
+            bootstrap:true,
+            data:rows,
+            salDets:salDets,
+            cycles:result
+          };
+          console.log(locals.data);
+          res.render('salaries/salaries-list-all',locals);
+        }else{
+          console.log('Query 2', err);
+        }
+      })
+    }else{
+      console.log(err);
+    
+  }
+
+  });
+
 });
 
 router.get('/department', function(req, res, next) {
@@ -132,7 +196,7 @@ router.get('/department', function(req, res, next) {
           salDets:salDets
         };
     
-        res.render('salaries/salaries-list-all', locals);
+        res.render('salaries/department-salaries', locals);
       }else{
         req.flash('error','You dont have access here');
         res.redirect('/');
@@ -175,7 +239,7 @@ router.get('/sal-info/:id', function(req, res, next) {
       bootstrap:true,
       my_session : req.session,
       empID : req.params.id,
-      data:rows
+      cycles:rows
     };
 
     res.render('salaries/salaries-form', locals);
@@ -183,6 +247,22 @@ router.get('/sal-info/:id', function(req, res, next) {
   })
  
 });
+
+router.get('/find' , function(req,res,next){
+  conn.query('Select * From paycycles', (err,rows) => {
+    var locals = {
+      title : 'Serhant Construction',
+      stylesheet:'',
+      my_session : req.session,
+      cycles:rows
+    };
+    res.render('salaries/paycycle-select',locals)
+  })
+})
+
+router.get('/result/:id', function(req,res,next){
+
+})
 
 router.post('/add-hours' , (req,res,next) => {
 
@@ -243,14 +323,16 @@ router.get('/sal-info/edit/:id', function(req, res, next) {
 
   conn.query(salarySQL, (err,rows)=> {
   if(!err){
+    console.log('search' + search);
     conn.query('Select * From paycycles' , (err,result) =>{
-      if (err) console.log('query 2 ' + err);
+      if (err) throw err;
       var locals = {
         title : 'Serhant Construction',
         stylesheet:'',
         bootstrap:true,
         empID: rows[0].emp_id,
-        salaryID : rows[0].id,
+        salaryID : search,
+        cycleID : rows[0].id,
         my_session : req.session,
         data:rows[0],
         cycles:result
@@ -298,7 +380,7 @@ let data = {};
 
     salaryCalc(data.hours,data.ovrtime_hrs,wages , data);
     
-    let editSQL = `Update employee_salaries Set hours = '${data.hours}', ovrtime_hrs = '${data.ovrtime_hrs}', salary='${data.salary}', cycle_id='${data.cycle}', state_id='${data.state_id}' Where id = '${req.body.salaryID}'`
+    let editSQL = `Update employee_salaries Set hours = '${data.hours}', ovrtime_hrs = '${data.ovrtime_hrs}', salary='${data.salary}', cycle_id='${req.body.cycleID}', state_id='${data.state_id}' Where id = ${req.body.salaryID}`
 
     conn.query(editSQL, data , (err,rows) => {
       if(err) console.log(err);
@@ -312,26 +394,47 @@ let data = {};
 })
 
 router.get('/payslip/:id' , (req,res,next) => {
+   
+   let payslipSQL = `SELECT s.id as Salary_id, em.emp_id , em.f_name , em.l_name , em.nis, d.department , p.position , d.ovrtime_rate,s.hours, s.ovrtime_hrs, s.salary, pc.cycle_strt , pc.cycle_end, st.state, pw.hrly_wage FROM employees em, departments d, employee_departments ed, positions p,  employee_positions ep,  postion_wages pw,  employee_salaries s , paycycles pc , states st WHERE ed.emp_id = em.emp_id AND ep.emp_id = em.emp_id AND ed.dep_id = d.id AND ep.pos_id = p.id  AND pw.pos_id = p.id AND s.cycle_id = pc.id AND pw.dep_id = d.id  AND s.emp_id = em.emp_id AND s.state_id = st.id AND em.emp_id = '${req.params.id}'`
 
-  conn.query(salarySQL, (err,rows)=> {
-    if(err) throw err
-    console.log(salarySQL);
-   var locals = {
-      title : 'Serhant Construction',
-      stylesheet:'/stylesheets/salaries.css',
-      data:rows,
-      bootstrap:true,
-      my_session : req.session
-    }
+   conn.query(payslipSQL,(err,rows) => {
+     if(req.session.loggedIn && req.session.department == 'Accounts'){
 
-    if(req.session.loggedIn && req.session.emp_id == req.params.id){
-      res.render('salaries/payslip', locals);
-    }else{
-      res.redirect('/')
-    }
-    
-  })
-})
+      let details = [];
+
+      console.log(rows);
+
+      rows.forEach(element => {
+        details.push({
+          tot_hours: element.hours + element.ovrtime_hrs,
+          ovrtime_hrs : element.ovrtime_hrs,
+          basic_pay:element.hours * element.hrly_wage,
+          ovrtime_pay: element.ovrtime_hrs * (element.hrly_wage * element.ovrtime_rate),
+          cycle_strt:element.cycle_strt,
+          end_strt:element.end_strt,
+          tot_salary: element.salary
+        })
+      });
+
+      
+      
+       var locals = {
+         title : 'Serhant Construction',
+         stylesheet:'/stylesheets/salaries.css',
+         bootstrap:true,
+         my_session : req.session,
+         data:rows,
+         details:details,
+
+       }
+       res.render('salaries/payslip', locals);
+     }else{
+       res.redirect('/')
+     }
+   })
+   // return data;
+   });
+ 
 
 
 

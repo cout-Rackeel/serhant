@@ -1,0 +1,46 @@
+
+
+<h2 style="text-align: center;">Salaries</h2>
+
+<div class="badge-display">
+  <h3><span class="badge badge-color-1" >Total hours :- <%= salDets.tot_wrk_hrs %> </span></h3>
+  <h3><span class="badge badge-color-1" >Total Over time hours :- <%= salDets.tot_ovr_time_hrs%> </span></h3>
+  <h3><span class="badge badge-color-1" >Total Salaries :- <%= (salDets.tot_salary).toLocaleString('en-US', {style: 'currency',currency: 'USD',})%> </span></h3>
+ 
+</div>
+
+<table class="table table-hover" style="margin-top: 30px;">
+  <thead>
+    <tr>
+      <th>Employee Id</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Total Hours</th>
+      <th>Normal Work Hours</th>
+      <th>Overtime Hours</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+      <% if (data.length){%> 
+
+   
+        <% data.forEach(emp => { %>
+          
+            <tr>
+              <td> <%=emp.emp_id%> </td>
+              <td> <%=emp.f_name%> </td>
+              <td> <%=emp.l_name%> </td>
+              <td> <%=emp.hours + emp.ovrtime_hrs%> </td>
+              <td> <%=emp.hours%> </td>
+              <td> <%=emp.ovrtime_hrs%> </td>
+              <td> <a href="/salaries/sal-info/edit/<%=emp.id%> "> Edit Salary Details </a> </td>
+             </tr>
+        <% }) %>
+     
+      <% }else{ %> 
+        <tr><td colspan="7" style="text-align: center;">No Employee Records entered</td></tr>
+      <% } %> 
+  </tbody>
+</table>
+

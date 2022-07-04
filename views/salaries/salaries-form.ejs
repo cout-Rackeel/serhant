@@ -18,15 +18,12 @@
         <div class="formControl  mb-3">
           <label class="form-label" for="cycle">Paycycle</label>
           <select name="cycle" id="cycle" class="form-control">
-            <% data.forEach(cycle => { %>
               <% cycles.forEach(cycle => { %>
                 <option value="<%=cycle.id%>">FROM <%= cycle.cycle_strt.toLocaleDateString() %> --TO-- <%= cycle.cycle_end.toLocaleDateString() %></option>
                 <% }) %>
-            <% }) %>
           </select>
         </div>
 
-         
         
           <div class="formControl mb-3">
             <label for="none" class="form-label">None</label>
